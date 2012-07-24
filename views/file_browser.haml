@@ -1,0 +1,66 @@
+!!! 5
+%html
+  %head
+    %title= "File Browser"
+    = haml :_ios_meta
+    %link{:rel => "stylesheet", :type => "text/css", :href => "/lib/jquery.mobile-1.1.0.css"}
+    %link{:rel => "stylesheet", :type => "text/css", :href => "/css/jquery-custom.css"}
+    %script{:type => "text/javascript", :src  => "/lib/jquery-1.7.2.min.js"}
+    %script{:type => "text/javascript", :src  => "/jquery-ui-1.8.19.custom/js/jquery-ui-1.8.19.custom.min.js"}
+    %script{:type => "text/javascript", :src  => "/lib/jquery.mobile-1.1.0.js"}
+    %script{:type => "text/javascript",:src  => "/lib/jquery.json-2.3.js"}
+    %script{:type => "text/javascript",:src  => "/lib/reconnecting-websocket.js"}
+    %script{:type => "text/javascript",:src  => "/lib/jquery.websocket-0.0.1.js"}
+    %script{:type => "text/javascript", :src  => "/lib/jquery.ui.touch-punch.min.js"}
+    %script{:type => "text/javascript", :src  => "/scripts/sortableList.js"}    
+    :javascript
+      var refresh = function() {
+        // $('#file-list-base ul').listview('refresh');
+      },
+      
+      grab = function(dir, destination, callback) {
+        if (!dir) {
+          dir = '';
+        }
+        if (!destination) {
+          destination = $('#file-list-base');
+        }
+        if (!callback) {
+          callback = function(){};
+        }
+        
+        $.ajax({
+          type: "POST",
+          url: '/file-browser',
+          data: {
+            dir: dir
+          },
+          async: false
+        }).done(function(data){
+          destination.append(data);
+          refresh();
+          callback();
+        });
+      },
+      
+      update = function() {
+        $('#file-list-base a').click(function(e) {
+          e.preventDefault();
+          grab(
+            $(this).attr('data-dir'),
+            $(this).parent(),
+            function() {
+              alert('got!~');
+            }
+          );
+        });
+      };
+      
+      $( document ).delegate("#hisaishi-file-list-page", "pageinit", function() {
+        grab();
+      });
+  %body{:id => "hisaishi-file-list"}
+    #hisaishi-file-list-page{"data-role" => "page"}
+      %div{"data-role" => "header"}
+        %h1= "File Browser"
+      %div{"data-role" => "content", :id => "file-list-base"}

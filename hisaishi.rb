@@ -609,6 +609,47 @@ post '/queue-control' do
   'Success! <br /> <a href="/queue">go to queue</a> <br /> <a href="/queue-control">go to queue control</a>'
 end
 
+# file browser
+
+get '/file-browser' do
+  pin_auth
+  haml :file_browser
+end
+
+post '/file-browser' do
+  pin_auth
+  base_path = '/Volumes'
+  dir = File.join(base_path, params[:dir])
+  file_list = []
+  
+  Dir.foreach(dir) do |item|
+    next if item == '.' or item == '..'
+    # do work on real items
+    item = item.gsub(dir + '/', '') # @TODO fix this crap
+    file = File.join(dir, item)
+    if File.exist? file
+      type = 'file'
+      if File.directory? file
+        type = 'directory'
+      end
+      
+      file_list << {
+        :name => file,
+        :path => File.join(params[:dir], file),
+        :type => type
+      }
+    end
+    
+  end
+  
+  puts file_list
+  
+  haml :file_list, :locals => {
+    :base_dir => dir,
+    :files    => file_list
+  }
+end
+
 # ##### HELPER FUNCTIONS
 
 # Upload

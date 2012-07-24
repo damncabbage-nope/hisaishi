@@ -1,0 +1,7 @@
+%ul{"data-role" => "listview"}
+  - files.each do |f|
+    %li{"data_theme" => "c"}
+      - if f[:type] == 'directory'
+        %a{"data-rel" => "dialog", "data-transition" => "none", :href => "#", "data-dir" => f[:path]}= f[:name]
+      - else
+        %a{"data-rel" => "dialog", "data-transition" => "none", :href => "#", "data-file" => f[:path]}= f[:name]
