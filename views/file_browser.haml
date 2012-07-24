@@ -15,52 +15,60 @@
     %script{:type => "text/javascript", :src  => "/scripts/sortableList.js"}    
     :javascript
       var refresh = function() {
-        // $('#file-list-base ul').listview('refresh');
+        $('ul[data-role="listview"]').listview();
+        $('ul[data-role="listview"]').listview('refresh');
       },
       
       grab = function(dir, destination, callback) {
-        if (!dir) {
-          dir = '';
-        }
-        if (!destination) {
-          destination = $('#file-list-base');
-        }
-        if (!callback) {
-          callback = function(){};
-        }
+        if (!dir) dir = '';
+        if (!destination) destination = $('#file-list-base');
+        if (!callback) callback = function(){};
         
         $.ajax({
           type: "POST",
           url: '/file-browser',
-          data: {
-            dir: dir
-          },
+          data: { dir: dir },
           async: false
-        }).done(function(data){
+        })
+        .done(function(data){
           destination.append(data);
-          refresh();
-          callback();
+          refresh(), callback(), update();
         });
       },
       
       update = function() {
-        $('#file-list-base a').click(function(e) {
-          e.preventDefault();
-          grab(
-            $(this).attr('data-dir'),
-            $(this).parent(),
-            function() {
-              alert('got!~');
+        $('#file-list-base a')
+          .unbind('click')
+          .bind('click', function(e) {
+            var self = this;
+            
+            if (!!$(this).attr('data-dir')) {            
+              if (!$(this).hasClass('retrieved')) {
+                e.preventDefault();
+                grab(
+                  $(this).attr('data-dir'),
+                  $(this).closest('li'),
+                  function() {
+                    $(self).addClass('retrieved').click();
+                  }
+                );
+              }
             }
-          );
-        });
+            else {
+              alert($(this).attr('data-file'));
+            }
+          });
       };
+      
+      $(document).bind("mobileinit", function(){
+        $.mobile.page.prototype.options.addBackBtn = true;
+      });
       
       $( document ).delegate("#hisaishi-file-list-page", "pageinit", function() {
         grab();
       });
   %body{:id => "hisaishi-file-list"}
-    #hisaishi-file-list-page{"data-role" => "page"}
+    #hisaishi-file-list-page{"data-role" => "page", "data-add-back-btn" => "true"}
       %div{"data-role" => "header"}
         %h1= "File Browser"
       %div{"data-role" => "content", :id => "file-list-base"}

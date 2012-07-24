@@ -618,12 +618,13 @@ end
 
 post '/file-browser' do
   pin_auth
-  base_path = '/Volumes'
+  base_path = '/Users/geoffrey/Music'
   dir = File.join(base_path, params[:dir])
   file_list = []
   
   Dir.foreach(dir) do |item|
     next if item == '.' or item == '..'
+    next if item[0] == '.'
     # do work on real items
     item = item.gsub(dir + '/', '') # @TODO fix this crap
     file = File.join(dir, item)
@@ -633,9 +634,14 @@ post '/file-browser' do
         type = 'directory'
       end
       
+      file_path = item
+      if !params[:dir].empty?
+        file_path = File.join(params[:dir], item)
+      end
+      
       file_list << {
-        :name => file,
-        :path => File.join(params[:dir], file),
+        :name => item,
+        :path => file_path,
         :type => type
       }
     end
