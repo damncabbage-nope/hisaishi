@@ -109,7 +109,7 @@
 				= haml :_lock_button
 			%div{"data-role" => "content"}
 				%div{"data-role" => "fieldcontain"}
-					%a{"data-role" => "button", "data-transition" => "slide", :href => "/search"}= "Add song"
+					%a{"data-role" => "button", "data-transition" => "slide", :href => "/search", "data-ajax" => "false"}= "Add song"
 					%br
 				%ul{"data-role" => "listview", "data_inset" => "true", :id => "queue-listview"}
 					- queue.each do |q|
