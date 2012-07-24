@@ -1,0 +1,6 @@
+#file-list-error-popup{:class => "file-list-error"}
+  %div{"data-role" => "header", "data-theme" => "e"}
+    %h1= "Couldn't find directory"
+  %div{"data-role" => "content", "data-theme" => "d"}
+    %p= "If you unplugged a USB drive just now, plug it back in k?"
+    %a{:href => "/queue", "data-role" => "button", "data-rel" => "back"}= "OK"

@@ -14,57 +14,91 @@
     %script{:type => "text/javascript", :src  => "/lib/jquery.ui.touch-punch.min.js"}
     %script{:type => "text/javascript", :src  => "/scripts/sortableList.js"}    
     :javascript
-      var refresh = function() {
-        $('ul[data-role="listview"]').listview();
-        $('ul[data-role="listview"]').listview('refresh');
-      },
-      
-      grab = function(dir, destination, callback) {
-        if (!dir) dir = '';
-        if (!destination) destination = $('#file-list-base');
-        if (!callback) callback = function(){};
+      $( document ).delegate("#hisaishi-file-list-page", "pageinit", function() {
+        var refresh = function() {
+          // Check for updated listviews
+          var lv = $('ul[data-role="listview"]');
+          if (lv.length > 0) {
+            if (!lv.hasClass('initialised')) {
+              lv.listview().addClass('initialised');
+            }
+            lv.listview('refresh');
+          }
+          
+          // Check for error popups
+          var pp = $('.file-list-error');
+          if (pp.length > 0) {
+            pp.each(function(){
+              var self  = $(this);
+              $('body').append(self);
+              $.mobile.changePage(
+                '#' + self.attr('id'), 
+                'pop', 
+                false, 
+                true
+              );
+            });
+          }
+          
+          return pp.length == 0;
+        },
         
-        $.ajax({
-          type: "POST",
-          url: '/file-browser',
-          data: { dir: dir },
-          async: false
-        })
-        .done(function(data){
-          destination.append(data);
-          refresh(), callback(), update();
-        });
-      },
-      
-      update = function() {
-        $('#file-list-base a')
-          .unbind('click')
-          .bind('click', function(e) {
+        grab = function(dir, destination, callback) {
+          if (!dir) dir = '';
+          if (!destination) destination = $('#file-list-base');
+          if (!callback) callback = function(ok){};
+          
+          var ok = false;
+          
+          // AJAX request to file browser
+          $.ajax({
+            type: "POST",
+            url: '/file-browser',
+            data: { dir: dir },
+            async: false
+          })
+          .done(function(data){
+            // Special UL cleaning if we are not at root
+            if (dir.length > 0) {
+              data = data.replace('data-role="listview"', '');
+            }
+            
+            destination.append(data);
+            ok = refresh(), 
+            callback(ok), 
+            update();
+          });
+        },
+        
+        update = function() {
+          var links = $('#hisaishi-file-list .ui-listview a');
+          
+          links.unbind('click').bind('click', function(e) {
             var self = this;
             
-            if (!!$(this).attr('data-dir')) {            
+            $('.file-list-error').remove(); // Clean up old crap!
+            
+            if ($(this).attr('data-dir') && $(this).attr('data-dir').length > 0) {
+              var dir = $(this).attr('data-dir'),
+              original_li = $('#hisaishi-file-list-page a[data-dir="' + dir + '"]').closest('li');
+              
               if (!$(this).hasClass('retrieved')) {
                 e.preventDefault();
                 grab(
-                  $(this).attr('data-dir'),
+                  dir, 
                   $(this).closest('li'),
-                  function() {
-                    $(self).addClass('retrieved').click();
+                  function(ok) {
+                    if (ok) $(self).addClass('retrieved').click();
                   }
                 );
               }
             }
             else {
-              alert($(this).attr('data-file'));
+              alert($(this).text() + ' ' + $(this).attr('data-file'));
             }
           });
-      };
-      
-      $(document).bind("mobileinit", function(){
-        $.mobile.page.prototype.options.addBackBtn = true;
-      });
-      
-      $( document ).delegate("#hisaishi-file-list-page", "pageinit", function() {
+        };
+
         grab();
       });
   %body{:id => "hisaishi-file-list"}

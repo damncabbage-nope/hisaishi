@@ -1,7 +1,8 @@
-%ul{"data-role" => "listview"}
+%ul{"data-role" => "listview", "data-base-dir" => base_dir}
+  %li{"data_theme" => "c"}
   - files.each do |f|
     %li{"data_theme" => "c"}
       - if f[:type] == 'directory'
-        %a{"data-rel" => "dialog", "data-transition" => "none", :href => "#", "data-dir" => f[:path]}= f[:name]
+        %a{:href => "#", "data-dir" => f[:path]}= f[:name]
       - else
-        %a{"data-rel" => "dialog", "data-transition" => "none", :href => "#", "data-file" => f[:path]}= f[:name]
+        %a{:href => "#", "data-file" => f[:path]}= f[:name]
