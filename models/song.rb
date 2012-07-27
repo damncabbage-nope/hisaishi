@@ -211,7 +211,6 @@ class Song
   end
   
   def local_image_path
-    debugger
     if settings.files_local
       base = "public/music/#{source_dir}"
       if image_file
