@@ -34,4 +34,5 @@ group :development, :test do
   gem 'capybara'
   gem "factory_girl", "~> 3.0"
   gem 'ffaker'
+  gem 'debugger'
 end
