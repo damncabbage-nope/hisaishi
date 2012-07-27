@@ -2,17 +2,7 @@
 %html
   %head
     %title= "Karaoke Queue"
-    = haml :_ios_meta
-    %link{:rel => "stylesheet", :type => "text/css", :href => "/lib/jquery.mobile-1.1.0.css"}
-    %link{:rel => "stylesheet", :type => "text/css", :href => "/css/jquery-custom.css"}
-    %script{:type => "text/javascript", :src  => "/lib/jquery-1.7.2.min.js"}
-    %script{:type => "text/javascript", :src  => "/jquery-ui-1.8.19.custom/js/jquery-ui-1.8.19.custom.min.js"}
-    %script{:type => "text/javascript", :src  => "/lib/jquery.mobile-1.1.0.js"}
-    %script{:type => "text/javascript",:src  => "/lib/jquery.json-2.3.js"}
-    %script{:type => "text/javascript",:src  => "/lib/reconnecting-websocket.js"}
-    %script{:type => "text/javascript",:src  => "/lib/jquery.websocket-0.0.1.js"}
-    %script{:type => "text/javascript", :src  => "/lib/jquery.ui.touch-punch.min.js"}
-    %script{:type => "text/javascript", :src  => "/scripts/sortableList.js"}    
+    = haml :_head
     :javascript
       $( document ).delegate("#queue-page", "pageinit", function() {
         var csrf  = "",
@@ -110,24 +100,24 @@
         toggleListNow(true);
         $('.toggle-delete').click(deleteRow);
       });
-  %body{:id => "hisaishi-queue-list"}
-    #queue-page{"data-role" => "page"}
-      %div{"data-role" => "header"}
-        %a{:class => "ui-btn-left", "data-icon" => "gear", :href => "#", :id => "edit-toggle"}= "Edit"
-        %h1= "Queue"
-        = haml :_lock_button
-      %div{"data-role" => "content"}
-        %div{"data-role" => "fieldcontain"}
-          %a{"data-role" => "button", "data-transition" => "slide", :href => "/search", "data-ajax" => "false"}= "Add song"
-          %br
-        %ul{"data-role" => "listview", "data_inset" => "true", :id => "queue-listview"}
-          - queue.each do |q|
-            - song = songs[q.song_id]
-            %li{"data_theme" => "c", :id => "queue_#{q.id}", :class => q.play_state}
-              %a{"data-rel" => "dialog", "data-transition" => "none", :href => "/queue-info/#{q.id}"}
-                %h3= q.requester
-                %p{:class => "separated-descriptions"}
-                  %em= "#{song[:artist]}"
-                  %em= "#{song[:title]}"
-              %a{:href => "#", 'data-icon' => 'minus', 'class' => 'toggle-delete'}= "Delete"
-      = haml :menubar
+	%body{:id => "hisaishi-queue-list"}
+		#queue-page{"data-role" => "page"}
+			%div{"data-role" => "header"}
+				%a{:class => "ui-btn-left", "data-icon" => "gear", :href => "#", :id => "edit-toggle"}= "Edit"
+				%h1= "Queue"
+				= haml :_lock_button
+			%div{"data-role" => "content"}
+				%div{"data-role" => "fieldcontain"}
+					%a{"data-role" => "button", "data-transition" => "slide", :href => "/search", "data-ajax" => "false"}= "Add song"
+					%br
+				%ul{"data-role" => "listview", "data_inset" => "true", :id => "queue-listview"}
+					- queue.each do |q|
+						- song = songs[q.song_id]
+						%li{"data_theme" => "c", :id => "queue_#{q.id}", :class => q.play_state}
+							%a{"data-rel" => "dialog", "data-transition" => "none", :href => "/queue-info/#{q.id}"}
+								%h3= q.requester
+								%p{:class => "separated-descriptions"}
+									%em= "#{song[:artist]}"
+									%em= "#{song[:title]}"
+							%a{:href => "#", 'data-icon' => 'minus', 'class' => 'toggle-delete'}= "Delete"
+			= haml :menubar
