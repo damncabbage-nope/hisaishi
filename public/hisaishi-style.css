@@ -12,11 +12,11 @@
 }
 
 .word {
-	-webkit-transition: all 0.2s ease-in-out;
+	/*-webkit-transition: all 0.2s ease-in-out;*/
 }
 
 .word-highlight {
-	color: #f00;
+	color: #FF7F50;
 }
 
 .clear {
