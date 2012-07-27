@@ -186,7 +186,7 @@ div.details {
 
 span.timer {
 	position: relative;
-	top: -8px;
+      top: 2px;
 	padding-left: 10px;
 }
 
