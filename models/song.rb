@@ -208,10 +208,16 @@ class Song
   end
   
   def local_image_path
-    if settings.files_local and !image_file.nil? then
-      'public/music/' + source_dir + image_file
-    else
-      nil
+    debugger
+    if settings.files_local
+      base = "public/music/#{source_dir}"
+      if image_file
+        "#{base}#{image_file}"
+      else
+        # Let's go look for a file
+        images = Dir["#{base}*.jpg"] || []
+        images.sample if images.length > 0
+      end
     end
   end
   
