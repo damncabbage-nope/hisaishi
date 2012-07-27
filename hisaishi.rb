@@ -101,16 +101,7 @@ get '/song/:song_id/audio.mp3' do
     if !audio_path.nil? then
       send_file(audio_path)
     else
-      begin
-        open(song.audio_path).read[0, 50]
-        if io.status[0] == "200" then
-          redirect song.audio_path
-        else
-          halt(404, "Audio not found.")
-        end
-      rescue StandardError => bang
-        halt(404, "Audio not found.")
-      end
+      halt(404, "Audio not found.")
     end
   else
     halt(404, "Song not found.")
@@ -125,16 +116,7 @@ get '/song/:song_id/lyrics.txt' do
       puts lyrics_path
       send_file(lyrics_path)
     else
-      begin
-        open(song.lyrics_path).read[0, 50]
-        if io.status[0] == "200" then
-          redirect song.lyrics_path
-        else
-          'None'
-        end
-      rescue StandardError => bang
-        'None'
-      end
+      'None'
     end
   else
     halt(404, "Song not found.")
@@ -148,16 +130,7 @@ get '/song/:song_id/image' do
     if !image_path.nil? then
       send_file(image_path)
     else
-      begin
-        open(song.image_path).read[0, 50]
-        if io.status[0] == "200" then
-          redirect song.image_path
-        else
-          halt(404, "Image not found.")
-        end
-      rescue StandardError => bang
-        halt(404, "Image not found.")
-      end
+      halt(404, "Image not found.")
     end
   else
     halt(404, "Song not found.")
