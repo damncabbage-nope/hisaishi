@@ -32,10 +32,13 @@ class Song
   
   def self.search(str)
   	str = '%' + str.downcase + '%'
-    Song.all(:conditions => ['LOWER(title) LIKE ?', str]) + 
-    Song.all(:conditions => ['LOWER(artist) LIKE ?', str]) + 
-    Song.all(:conditions => ['LOWER(album) LIKE ?', str]) + 
-    Song.all(:conditions => ['LOWER(origin_title) LIKE ?', str])
+    Song.all(:conditions => [
+      'LOWER(title) LIKE ?
+       OR LOWER(artist) LIKE ?
+       OR LOWER(album) LIKE ?
+       OR LOWER(origin_title) LIKE ?',
+       str, str, str, str
+    ], :order => [:title.asc, :origin_title.asc, :artist.asc])
   end
   
   def self.clean_string(str)
