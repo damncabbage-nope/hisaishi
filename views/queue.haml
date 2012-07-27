@@ -127,7 +127,14 @@
               %a{"data-rel" => "dialog", "data-transition" => "none", :href => "/queue-info/#{q.id}"}
                 %h3= q.requester
                 %p{:class => "separated-descriptions"}
-                  %em= "#{song[:artist]}"
-                  %em= "#{song[:title]}"
+                  %em= song[:title] if song[:title].present?
+                  -# HACK: Gotta view-helper this thing.
+                  - if song[:origin_title].present?
+                    - if song[:artist].present?
+                      %em= "#{song[:origin_title]} (#{song[:artist]})"
+                    - else
+                      %em= song[:origin_title]
+                  - else
+                    %em= song[:artist] if song[:artist].present?
               %a{:href => "#", 'data-icon' => 'minus', 'class' => 'toggle-delete'}= "Delete"
       = haml :menubar
