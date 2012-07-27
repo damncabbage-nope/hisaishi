@@ -177,4 +177,5 @@ DEPENDENCIES
   sinatra-jsonp
   sinatra-websocket
   sqlite3
+  thin
   xml-simple
