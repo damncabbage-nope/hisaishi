@@ -52,7 +52,8 @@ var HisaishiPlayer = function(params) {
 		}),
 		cover = (track.compiledCover == '') ? '' : $('<img />', {
 			id: 'track-image-' + ident,
-			src: 'data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==',
+			src: '/img/default_cover.jpg',
+			/* src: 'data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==', */
 			'class': 'track-image'
 		}),
 		lyrics = $('<div />', {
