@@ -32,6 +32,7 @@
       %div{:class => "field-wrap"}
         %label{:for => "genre"}= "Genre"
         %select{:name => "genre", :id => "genre"}
+          %option{:value => ""}= ""
           %option{:value => "Pop"}= "Pop"
           %option{:value => "Rock"}= "Rock"
           %option{:value => "Folk"}= "Folk"
@@ -49,14 +50,14 @@
       %div{:class => "field-wrap"}
         %label{:for => "language"}= "Language"
         %select{:name => "language", :id => "language"}
-          %option{:value => "JP"}= "Japanese"
-          %option{:value => "EN"}= "English"
-          %option{:value => "ZH"}= "Chinese"
-          %option{:value => "KR"}= "Korean"
-          %option{:value => "FR"}= "French"
-          %option{:value => "DE"}= "German"
-          %option{:value => "RU"}= "Russian"
-          %option{:value => "UNK"}= "Unknown"
+          %option{:value => "ja"}= "Japanese"
+          %option{:value => "en"}= "English"
+          %option{:value => "zh"}= "Chinese"
+          %option{:value => "kr"}= "Korean"
+          %option{:value => "fr"}= "French"
+          %option{:value => "de"}= "German"
+          %option{:value => "ru"}= "Russian"
+          %option{:value => "unk"}= "Unknown"
       %div{:class => "field-wrap"}
         %label{:for => "karaoke"}= "Karaoke"
         %select{:name => "karaoke", :id => "karaoke"}
