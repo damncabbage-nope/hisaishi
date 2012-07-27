@@ -7,7 +7,7 @@
 		0 0 10px black,
 		0 0 20px black
 	;
-	background: rgba(0,0,0,0.5);
+	/*background: rgba(0,0,0,0.5);*/
 	-webkit-transition: opacity 0.2s ease-in-out;
 }
 
@@ -24,7 +24,7 @@
 }
 
 .hidden-line, .queued-line, .complete-line {
-	opacity: 0.5;
+	opacity: 0.6;
 }
 
 /* Layout */
@@ -149,7 +149,7 @@ div.details {
 	top: 0;
 	right: 0;
 	background: rgba(0,0,0,0.5);
-	height: 50px;
+	height: 45px;
 	width: 100%;
 	/* display: none; */
 }
