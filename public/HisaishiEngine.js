@@ -258,13 +258,11 @@ var HisaishiEngine = function(params) {
     
     var that = this,
         hardFailure = false;
-    
+
     $.ajax({
       type: "GET",
-      url: '/proxy',
-      data: {
-        url: this.params.src.lyrics
-      },
+      url: this.params.src.lyrics,
+      data: {},
       async: true,
       success: function(data){
         console.log(that.params.src.lyrics);
