@@ -91,23 +91,23 @@
         });
         toggleListNow(true);
       });
-	%body{:id => "hisaishi-announce-list"}
-		#announce-page{"data-role" => "page"}
-			%div{"data-role" => "header"}
-				%a{:class => "ui-btn-left", "data-icon" => "gear", :href => "#", :id => "edit-toggle"}= "Edit"
-				%h1= "Announcements"
-				= haml :_lock_button
-			%div{"data-role" => "content"}
-				%div{"data-role" => "fieldcontain"}
-					%a{"data-role" => "button", "data-rel" => "dialog", "data-transition" => "none", :href => "/announce-add"}= "Make announcement"
-					%p= "Tap an announcement to make it display immediately."
-					%br
-				%ul{"data-role" => "listview", "data_inset" => "true", :id => "announce-listview"}
-					- announce.each do |a|
-						%li{"data_theme" => "c", :id => "announce_#{a.id}", :class => a.displayed ? "finished" : "queued"}
-							%a{"data-transition" => "slide", :href => "/announce-show-now/#{a.id}", "data-ajax" => "false"}
-								%h3= a.text
-								%p{:class => "separated-descriptions"}
-									%em= a.displayed ? "" : "Pending"
-							%a{:href => "/announce-delete/#{a.id}", "data-rel" => "dialog", "data-transition" => "none", 'data-icon' => 'minus', :class => 'toggle-delete'}= "Delete"
-			= haml :menubar
+  %body{:id => "hisaishi-announce-list"}
+    #announce-page{"data-role" => "page"}
+      %div{"data-role" => "header"}
+        %a{:class => "ui-btn-left", "data-icon" => "gear", :href => "#", :id => "edit-toggle"}= "Edit"
+        %h1= "Announcements"
+        = haml :_lock_button
+      %div{"data-role" => "content"}
+        %div{"data-role" => "fieldcontain"}
+          %a{"data-role" => "button", "data-rel" => "dialog", "data-transition" => "none", :href => "/announce-add"}= "Make announcement"
+          %p= "Tap an announcement to make it display immediately."
+          %br
+        %ul{"data-role" => "listview", "data_inset" => "true", :id => "announce-listview"}
+          - announce.each do |a|
+            %li{"data_theme" => "c", :id => "announce_#{a.id}", :class => a.displayed ? "finished" : "queued"}
+              %a{"data-transition" => "slide", :href => "/announce-show-now/#{a.id}", "data-ajax" => "false"}
+                %h3= a.text
+                %p{:class => "separated-descriptions"}
+                  %em= a.displayed ? "" : "Pending"
+              %a{:href => "/announce-delete/#{a.id}", "data-rel" => "dialog", "data-transition" => "none", 'data-icon' => 'minus', :class => 'toggle-delete'}= "Delete"
+      = haml :menubar
