@@ -289,6 +289,7 @@ post '/queue-reorder' do
     })
     
   end
+  'ok'
 end
 
 post '/queue-info-update' do
@@ -446,12 +447,14 @@ post '/announce-reorder' do
   pin_auth!
   unless params[:announce].nil?
     reorder_announcements(params[:announce])
+    
+    send_to_sockets("announcements", {
+      :for => "announcements",
+      :action => "update"
+    })
   end
   
-  send_to_sockets("announcements", {
-    :for => "announcements",
-    :action => "update"
-  })
+  'ok'
 end
 
 get '/announce-show-now/:a_id' do
