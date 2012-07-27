@@ -813,7 +813,7 @@ var HisaishiList = function(params) {
       $(this.params.containers.display).append(display);
     }
     
-    var img = $(new Image);
+    var img = $('<img />'); //new Image);
     img.load(function(){
       $('#track-image-' + ident).attr('src', img.src);
     }).error(function(){}).attr('src', track.compiledCover);
