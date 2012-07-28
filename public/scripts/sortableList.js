@@ -19,7 +19,7 @@ var SortableList = function(selector, params) {
 		onUpdate: function(event, ui) {
 		},
 		onDestroy: function(sel) {
-		},
+		}
 	};
 	$.extend(settings, params);
 	
@@ -32,9 +32,11 @@ var SortableList = function(selector, params) {
   };
   
   var currentOrder = '';
+  var initialised = false;
 	
 	var pub = {
 		init: function() {
+		  sel.sortable(sortPrefs);
 			pub.serialise();
 			settings.onInit(sel);
 		},
@@ -46,8 +48,6 @@ var SortableList = function(selector, params) {
 		},
 		
 		serialise: function() {
-		  sel.sortable(sortPrefs);
-		  // currentOrder = sel.sortable('serialize');
 		  var list = [];
 		  sel.children().map(function(){
 		    var parts = this.id.split('_');
@@ -63,7 +63,7 @@ var SortableList = function(selector, params) {
 		}
 	};
 	
-	if (!!settings.autoInit) {
+	if (settings.autoInit === true) {
 		pub.init();
 	}
 	
