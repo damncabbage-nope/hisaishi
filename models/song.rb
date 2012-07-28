@@ -78,23 +78,11 @@ class Song
   end
   
   def lyrics_exists
-    unless (!lyrics_file.nil?)
-      return false
-    end
-    
-    path = URI.escape(self.path_base + lyrics_file).gsub('[', '%5B').gsub(']', '%5D').gsub('+', '%2B')
-    puts path
-    data = nil
-    file = StringIO.new
-    begin
-      open(path) do |data|  
-        file.write data.read(4096)
-      end
-    rescue StandardError => bang
-      puts "Error: #{bang}"
-    end
-    puts file.length
-    return file.length > 50 # Anything less isn't a real song. :[
+    return false unless lyrics_file && local_lyrics_path
+    return @has_lyrics unless @has_lyrics.nil?
+
+    length = File.new(local_lyrics_path).size if File.exist?(local_lyrics_path)
+    @has_lyrics = length && length > 50 # Anything less isn't a real song. :[
   end
   
   def player_data
