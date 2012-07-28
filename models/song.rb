@@ -201,14 +201,14 @@ class Song
   def local_image_path
     if settings.files_local
       base = "public/music/#{source_dir}"
-      image = if image_file
+      image = if image_file.present?
                 "#{base}#{image_file}"
               else
                 # Let's go look for a file
-                images = Dir["#{base}*.jpg"] || []
+                images = Dir["#{base}*.jpg", "#{base}*.gif"] || []
                 images.sample if images.length > 0
               end
-      image ||= 'public/img/default_cover.jpg'
+      #image ||= 'public/img/default_cover.jpg'
       image
     end
   end
