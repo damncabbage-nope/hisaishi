@@ -102,7 +102,7 @@
       });
   %body{:id => "hisaishi-queue-list"}
     #queue-page{"data-role" => "page"}
-      %div{"data-role" => "header"}
+      %div{"data-role" => "header", "data-position" => "fixed"}
         %a{:class => "ui-btn-left", "data-icon" => "gear", :href => "#", :id => "edit-toggle"}= "Edit"
         %h1= "Queue"
         = haml :_lock_button
