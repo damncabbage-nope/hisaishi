@@ -443,3 +443,10 @@ table#hisaishi-all-songs .song-no {
   font-size: 3em;
 }
 
+/* Widgets */
+
+.ui-autocomplete {
+  max-height: 300px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}

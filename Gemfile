@@ -26,6 +26,7 @@ gem 'rack_csrf'
 gem 'natural_time'
 gem 'ruby-mp3info'
 gem 'activesupport'
+gem 'mime-types'
 
 gem 'sinatra-websocket'
 

@@ -54,6 +54,7 @@ end
 # ##### PULLS IN INCLUDED ROUTES
 
 require File.expand_path('HisaishiQueuePlayer.rb', File.dirname(__FILE__))
+require File.expand_path('admin.rb', File.dirname(__FILE__))
 
 # ##### PLAYER ROUTES
 

@@ -16,6 +16,8 @@ class Song
   property :karaoke,  Enum[ :true, :false, :unknown ], :default => :unknown
   property :source_dir,   Text
   property :audio_file,   Text
+  property :video_file,   Text
+  property :video_fmt,    Text
   property :lyrics_file,   Text
   property :image_file,   Text
   property :length,		Integer,   :default => 0
@@ -26,8 +28,16 @@ class Song
   property :created_at, DateTime, :default => lambda{ |p,s| DateTime.now}
   property :updated_at, DateTime, :default => lambda{ |p,s| DateTime.now}
   
+  @@cached_data = {}
+  @@cached_lyrics_length = {}
+  
   before :save do
     updated_at = DateTime.now
+    
+    if id > 0
+      @@cached_data[id].delete
+      @@cached_lyrics_length[id].delete
+    end
   end
   
   def self.search(str)
@@ -36,6 +46,17 @@ class Song
     Song.all(:conditions => ['LOWER(artist) LIKE ?', str]) + 
     Song.all(:conditions => ['LOWER(album) LIKE ?', str]) + 
     Song.all(:conditions => ['LOWER(origin_title) LIKE ?', str])
+  end
+  
+  def self.search_by_field(field, str)
+    str = '%' + str.downcase + '%'
+    ok_fields = ['artist', 'album', 'origin_title', 'origin_type']
+    if ok_fields.include? field
+      Song.all(:conditions => ['LOWER(' + field + ') LIKE ?', str]) # @TODO: make more better secure!
+    else
+      # puts field + ' is not ok'
+      nil
+    end
   end
   
   def self.clean_string(str)
@@ -75,12 +96,17 @@ class Song
   end
   
   def lyrics_exists
+    if @@cached_lyrics_length.has_key? self.id
+      return @@cached_lyrics_length[self.id]
+    end
+    
     unless (!lyrics_file.nil?)
+      @@cached_lyrics_length[self.id] = false
       return false
     end
     
     path = URI.escape(self.path_base + lyrics_file).gsub('[', '%5B').gsub(']', '%5D').gsub('+', '%2B')
-    puts path
+    # puts path
     data = nil
     file = StringIO.new
     begin
@@ -90,8 +116,11 @@ class Song
     rescue StandardError => bang
       puts "Error: #{bang}"
     end
-    puts file.length
-    return file.length > 50 # Anything less isn't a real song. :[
+    # puts file.length
+    lyrics_ok = file.length > 50        # Anything less isn't a real song. :[
+    
+    @@cached_lyrics_length[self.id] = lyrics_ok
+    lyrics_ok
   end
   
   def player_data
@@ -115,6 +144,9 @@ class Song
       :audio   => '/audio.mp3',
       :lyrics  => '/lyrics.txt',
       :cover   => '/image',
+      
+      :video   => !video_fmt.nil? ? '/video' : '',
+      :video_fmt => video_fmt,
     }
   end
   
@@ -174,6 +206,10 @@ class Song
   end
   
   def get_data!
+    if @@cached_data.has_key? self.id
+      return @@cached_data[self.id]
+    end
+    
   	data = nil
     mp3 = StringIO.new
     path = Song.clean_string(URI.escape(self.path))
@@ -188,7 +224,12 @@ class Song
     rescue StandardError => bang
       puts "Error: #{bang}"
     end
-    return data
+    
+    if self.id > 0
+      @@cached_data[self.id] = data
+    end
+    
+    data
   end
   
   def local_audio_path
@@ -210,6 +251,14 @@ class Song
   def local_image_path
     if settings.files_local and !image_file.nil? then
       'public/music/' + source_dir + image_file
+    else
+      nil
+    end
+  end
+  
+  def local_video_path
+    if settings.files_local and !video_file.nil? then
+      'public/music/' + source_dir + video_file
     else
       nil
     end

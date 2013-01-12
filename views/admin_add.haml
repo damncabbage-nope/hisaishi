@@ -1,0 +1,101 @@
+!!! 5
+%html
+  %head
+    %title= "Karaoke Admin: Add Song"
+    %link{:rel => "stylesheet", :type => "text/css", :href => "/hisaishi-style.css?1"}
+    %link{:rel => "stylesheet", :type => "text/css", :href => "/lib/ui/css/ui-darkness/jquery-ui-1.9.2.custom.min.css"}
+    %script{:type => "text/javascript",:src  => "/lib/jquery-1.8.3.min.js"}
+    %script{:type => "text/javascript",:src  => "/lib/ui/js/jquery-ui-1.9.2.custom.min.js"}
+    %script{:type => "text/javascript",:src  => "/lib/filePickerSetup.js"}
+  %body{:id => "hisaishi-admin--add"}
+    %h1
+      %span= "Karaoke Admin: "
+      -if defined?(song)
+        %span= "Edit #{song.title}"
+      -else
+        %span= "Add song"
+    - unless success.nil?
+      %ul{:class => "messages"}
+      - if success == 'true'
+        %li{:class => "status"}= "Song saved successfully."
+      - else
+        %li{:class => "error"}= "Song could not be saved, please try again."
+    %form{:action => "/admin/add", :method => "post", :enctype => "multipart/form-data"}
+      %div{:class => "field-wrap"}
+        %label{:for => "title"}= "Song title"
+        %input{:name => "title", :id => "title", :size => 40, :value => defined?(song) ? song.title : ""}
+      %div{:class => "field-wrap"}
+        %label{:for => "artist"}= "Artist"
+        %input{:name => "artist", :id => "artist", :size => 40, :class => "uses-helper", :value => defined?(song) ? song.artist : ""}
+      %div{:class => "field-wrap"}
+        %label{:for => "album"}= "Album"
+        %input{:name => "album", :id => "album", :size => 40, :class => "uses-helper", :value => defined?(song) ? song.album : ""}
+      %div{:class => "field-wrap"}
+        %label{:for => "origin_title"}= "Series Title"
+        %input{:name => "origin_title", :id => "origin_title", :size => 40, :class => "uses-helper", :value => defined?(song) ? song.origin_title : ""}
+      %div{:class => "field-wrap"}
+        %label{:for => "origin_type"}= "Series Type"
+        %input{:name => "origin_type", :id => "origin_type", :size => 40, :class => "uses-helper", :value => defined?(song) ? song.origin_type : ""}
+      %div{:class => "field-wrap"}
+        %label{:for => "origin_medium"}= "Series Medium"
+        %select{:name => "origin_medium", :id => "origin_medium"}
+          - media.each do |k|
+            %option{:value => k, :selected => (defined?(song) && song.origin_medium == k)}= k
+      %div{:class => "field-wrap"}
+        %label{:for => "genre"}= "Genre"
+        %select{:name => "genre", :id => "genre"}
+          - genres.each do |k|
+            %option{:value => k, :selected => (defined?(song) && song.genre == k)}= k
+      %div{:class => "field-wrap"}
+        %label{:for => "language"}= "Language"
+        %select{:name => "language", :id => "language"}
+          - languages.each do |k, v|
+            %option{:value => k, :selected => (defined?(song) && song.language == k)}= v
+      %div{:class => "field-wrap"}
+        %label{:for => "karaoke"}= "Karaoke"
+        %select{:name => "karaoke", :id => "karaoke"}
+          %option{:value => "true"}= "Yes"
+          %option{:value => "false"}= "No"
+          %option{:value => "unknown"}= "Don't know"
+      %div{:class => "field-wrap"}
+        %label{:for => "song_type"}= "Song Type"
+        %select{:name => "song_type", :id => "song_type", :class => "toggle-source", "data-togglegroup" => "song_type"}
+          %option{:value => "audio_file"}= "Audio"
+          %option{:value => "video_file"}= "Video (file)"
+          %option{:value => "video_url"}= "Video (external)"
+      = haml :uploader, :locals => {:song => defined?(song) ? song : nil, :field => {:id => "audio_file", :title => "Audio file"}, :field_class => "toggleable", :wrap_data => {"data-togglegroup" => "song_type"}}
+      = haml :uploader, :locals => {:song => defined?(song) ? song : nil, :field => {:id => "video_file", :title => "Video file"}, :field_class => "toggleable", :wrap_data => {"data-togglegroup" => "song_type"}}
+      %div{:class => "field-wrap toggleable", "data-togglegroup" => "song_type"}
+        %label{:for => "video_url"}= "Video URL"
+        %input{:name => "video_url", :id => "video_url", :size => 40}
+      = haml :uploader, :locals => {:song => defined?(song) ? song : nil, :field => {:id => "lyrics_file", :title => "Lyrics"}}
+      = haml :uploader, :locals => {:song => defined?(song) ? song : nil, :field => {:id => "image_file", :title => "Image"}}
+      %div{:class => "field-wrap"}
+        %input{:type => "submit", :value => "Add song"}
+    :javascript
+      $(document).ready(function(){
+        $('.toggleable').hide();
+
+        var groupToggle = function(elem) {
+          var group = elem.attr('data-togglegroup');
+          var id = elem.val();
+          $('.toggleable[data-togglegroup="' + group + '"]').hide('fast');
+          $('#' + id).parent('[data-togglegroup="' + group + '"]').show('fast');
+        };
+        
+        $('.toggle-source').change(function(){
+          groupToggle($(this));
+        }).each(function(){
+          groupToggle($(this));
+        });
+        
+        $('.uses-helper').each(function(){
+          $(this).autocomplete({
+            source: '/admin/helper/' + $(this).attr('id')
+          });
+        });
+        
+        $('.uploader-field').each(function(){
+          filePickerSetup(this);
+        });
+      });

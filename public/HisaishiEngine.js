@@ -404,6 +404,14 @@ var HisaishiEngine = function(params) {
     }
   };
   
+  /* Media Support */
+  
+  that.mediaType = function() {
+    if (!!this.params.src.audio) return 'audio';
+    if (!!this.params.src.video) return 'video';
+    return null;
+  };
+  
   /* Audio */
   
   that.audioBind = function() {
