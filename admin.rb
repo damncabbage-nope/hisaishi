@@ -210,6 +210,28 @@ module Sinatra
         
         song
       end
+      
+      def read_file(filename)
+        content = ''
+        file_stream = StringIO.new
+        # puts filename
+        
+        begin
+          File.open(filename, "r") { |f|
+            file_stream.write(f.read)
+          }
+          content = file_stream.string
+        rescue StandardError => bang
+          puts "Error: #{bang}"
+          content = `cat #{filename} >&2` #Load, you fucker!
+          #puts cmd
+          # content = system(cmd)
+        end
+        
+        puts 'CONTENT: ' + content
+        
+        content
+      end
     end
     
     def self.registered(app)
@@ -267,7 +289,43 @@ module Sinatra
       
       app.get '/admin/lyrics/:song_id' do
         pin_auth
-        "Edit a song's lyrics!"
+        song = Song.get(params[:song_id].to_i)
+        lyrics = ''
+        path = song.local_lyrics_path
+        
+        wd = Dir.pwd
+        
+        unless path.nil?
+          path = File.expand_path(File.join(File.dirname(__FILE__), path).chomp)
+          lyrics_stream = StringIO.new
+          
+          Dir.chdir(File.dirname(path))
+          # puts Dir.pwd
+          
+          lyrics = read_file(path)
+          
+          #begin
+            # puts 'path to song ' + path
+            # puts File.exist? path
+            
+          #  open(File.basename(path)) do |data|  
+          #    lyrics_stream.write data.read(4096)
+          #  end
+          #  lyrics_stream.rewind
+          #rescue StandardError => bang
+          #  puts "Error: #{bang}"
+          #end
+          #
+          #lyrics = lyrics_stream.string
+        end
+        
+        Dir.chdir(wd)
+        
+        haml :admin_lyrics, :locals => {
+          :song => song,
+          :lyrics => lyrics,
+          :success => params["success"].to_s != '' ? params["success"] : nil,
+        }
       end
       
       app.post '/admin/lyrics/:song_id' do

@@ -1,0 +1,29 @@
+!!! 5
+%html
+  %head
+    %title= "Karaoke Admin: Lyrics"
+    %link{:rel => "stylesheet", :type => "text/css", :href => "/hisaishi-style.css?1"}
+    %link{:rel => "stylesheet", :type => "text/css", :href => "/lib/ui/css/ui-darkness/jquery-ui-1.9.2.custom.min.css"}
+    %script{:type => "text/javascript",:src  => "/lib/jquery-1.8.3.min.js"}
+    %script{:type => "text/javascript",:src  => "/lib/ui/js/jquery-ui-1.9.2.custom.min.js"}
+    %script{:type => "text/javascript",:src  => "/lib/filePickerSetup.js"}
+  %body{:id => "hisaishi-admin--lyrics"}
+    %h1
+      %span= "Karaoke Admin: "
+      %span= "Lyrics for #{song.title}"
+    - unless success.nil?
+      %ul{:class => "messages"}
+      - if success == 'true'
+        %li{:class => "status"}= "Lyrics saved successfully."
+      - else
+        %li{:class => "error"}= "Lyrics could not be saved, please try again."
+    %form{:action => "/admin/lyrics/#{song.id}", :method => "post", :enctype => "multipart/form-data"}
+      %div{:class => "field-wrap"}
+        %label{:for => "lyrics"}= "Lyrics"
+        %textarea{:name => "lyrics", :id => "lyrics", :rows => 10}= defined?(lyrics) ? lyrics : ""
+      %div{:class => "field-wrap"}
+        %input{:type => "submit", :value => "Update lyrics"}
+    :javascript
+      $(document).ready(function(){
+        
+      });

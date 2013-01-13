@@ -9,7 +9,7 @@ require 'fileutils'
 require File.expand_path('environment.rb', File.dirname(__FILE__))
 
 # Base hisaishi functionality
-use Rack::Session::Cookie
+# use Rack::Session::Cookie
 # apply_csrf_protection unless settings.environment == :test
 
 # ##### WEBSOCKET ROUTES
@@ -123,7 +123,7 @@ get '/song/:song_id/lyrics.txt' do
   if !song.nil? then
     lyrics_path = song.local_lyrics_path
     if !lyrics_path.nil? then
-      puts lyrics_path
+      # puts lyrics_path
       send_file(lyrics_path)
     else
       begin
@@ -193,7 +193,7 @@ end
 get '/queue' do
   pin_auth
   q = queue_songs
-  puts q
+  # puts q
   q[:authed] = has_admin_pin
   haml :queue, :locals => q
 end
@@ -201,7 +201,7 @@ end
 get '/queue-info/:q_id' do
   pin_auth!
   q = HisaishiQueue.get(params[:q_id])
-  puts q
+  # puts q
   song = Song.get(q.song_id)
   haml :queue_info, :locals => {
     :song => song,
@@ -212,7 +212,7 @@ end
 post '/queue-info-process' do
   pin_auth!
   q = HisaishiQueue.get(params[:q_id])
-  puts params[:action]
+  # puts params[:action]
 
   trigger_action = "queue_update"
   case params[:action]
@@ -556,7 +556,6 @@ post '/upload' do
   #puts image
   
   unless (audio[:valid] && lyrics[:valid])
-    puts 'no'
     redirect '/upload'
   end
   

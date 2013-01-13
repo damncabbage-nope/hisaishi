@@ -1,4 +1,4 @@
 %div{:class => "field-wrap uploader-field #{defined?(field_class) ? field_class : ''}", "data-togglegroup" => (defined?(wrap_data) && defined?(wrap_data["data-togglegroup"]) ? wrap_data["data-togglegroup"] : '')}
   %label{:for => field[:id]}= "#{field[:title]}"
-  %input{:class => "upload-path", :name => field[:id], :id => field[:id], :value => (defined?(song) && !song.nil?) ? "#{song.send(field[:id])}" : ""}
+  %input{:class => "upload-path", :name => field[:id], :id => field[:id], :value => (defined?(song) && !song.nil?) ? "/#{song.source_dir}#{song.send(field[:id])}" : ""}
   %input{:class => "upload-picker", :type => "file", :name => "#{field[:id]}--file", :id => "#{field[:id]}--file"}

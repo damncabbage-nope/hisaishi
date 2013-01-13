@@ -34,7 +34,7 @@ class Song
   before :save do
     updated_at = DateTime.now
     
-    if id > 0
+    if !self.id.nil? and self.id > 0
       @@cached_data[id].delete
       @@cached_lyrics_length[id].delete
     end
