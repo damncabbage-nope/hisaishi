@@ -125,7 +125,7 @@ var SoramimiLyrics = function(params) {
    * Parses the Soramimi lyrics format and triggers a callback
    * when done.
    */
-  that.parseLyricsFormat = function(raw, callback) {
+  that.parseLyricsFormat = function(raw) {
     var re    = /\[([0-9:]+)\]([^\[]*)/g,
       fontre  = /<FONT COLOR = "(#[0-9A-F]+)">/g;
     var lines = raw.split(/[\r\n]/g);
@@ -244,7 +244,7 @@ var SoramimiLyrics = function(params) {
       return a - b;
     });
     
-    callback();
+    // callback();
   };
   
   $.extend(true, that, {params: params});
