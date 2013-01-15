@@ -1,0 +1,24 @@
+!!! 5
+%html
+  %head
+    %title= "Karaoke Admin: Delete song?"
+    %link{:rel => "stylesheet", :type => "text/css", :href => "/hisaishi-style.css?1"}
+    %link{:rel => "stylesheet", :type => "text/css", :href => "/lib/ui/css/ui-darkness/jquery-ui-1.9.2.custom.min.css"}
+    %script{:type => "text/javascript",:src  => "/lib/jquery-1.8.3.min.js"}
+    %script{:type => "text/javascript",:src  => "/lib/ui/js/jquery-ui-1.9.2.custom.min.js"}
+    %script{:type => "text/javascript",:src  => "/lib/filePickerSetup.js"}
+  %body{:id => "hisaishi-admin--delete"}
+    %h1
+      %span= "Karaoke Admin: "
+      %span= "Delete #{song.title}?"
+    %form{:action => "/admin/delete/#{song.id}", :method => "post", :enctype => "multipart/form-data"}
+      %div{:class => "field-wrap"}
+        %label{:for => "delete_ok"}= "Are you sure you want to delete #{song.title}? The song's files will also be deleted and you will not be able to recover them."
+        %br
+        %input{:type => "radio", :name => "delete_ok", :id => "delete_ok_no", :value => '0', :checked => "checked"}
+        %label{:for => "delete_ok_no"}= "No"
+        %br
+        %input{:type => "radio", :name => "delete_ok", :id => "delete_ok_yes", :value => '1'}
+        %label{:for => "delete_ok_yes"}= "Yes"
+      %div{:class => "field-wrap"}
+        %input{:type => "submit", :value => "Delete song"}

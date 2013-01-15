@@ -40,6 +40,16 @@ class Song
     end
   end
   
+  # before :delete do
+  #   delete_file('audio_file')
+  #   delete_file('lyrics_file')
+  #   delete_file('video_file')
+  #   delete_file('image_file')
+  #   
+  #   @@cached_data[self.id].delete
+  #   @@cached_lyrics_length[self.id].delete
+  # end
+  
   def self.search(str)
   	str = '%' + str.downcase + '%'
     Song.all(:conditions => ['LOWER(title) LIKE ?', str]) + 
@@ -261,6 +271,23 @@ class Song
       'public/music/' + source_dir + video_file
     else
       nil
+    end
+  end
+  
+  private
+  
+  def delete_file(field)
+    # Clean up files, but only if they're not needed by other songs
+    
+    all_files = Song.all(:conditions => [
+      field + ' NOT ?', nil,  
+      field + ' != ?', "", 
+      field + ' = ?', self.send(field), 
+      'id NOT ?', self.id
+    ])
+    
+    if all_files.length == 0
+      # Delete lyrics file
     end
   end
   

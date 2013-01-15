@@ -301,12 +301,21 @@ module Sinatra
       
       app.get '/admin/delete/:song_id' do
         pin_auth
-        "Delete a song?"
+        pin_auth
+        haml :admin_delete, :locals => {
+          :song => Song.get(params[:song_id].to_i),
+        }
       end
       
       app.post '/admin/delete/:song_id' do
         pin_auth!
-        "Deleted a song!"
+        ok = params[:delete_ok]
+        if ok == '1'
+          # Delete song
+          song = Song.get(params[:song_id].to_i)
+          song.delete
+        end
+        redirect '/admin/list'
       end
       
       app.get '/admin/helper/:field' do
