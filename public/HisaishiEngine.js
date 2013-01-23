@@ -61,32 +61,7 @@ var HisaishiEngine = function(params) {
   
   /* Utilities */
   
-  that.util = {
-    trim: function(txt) {
-      return txt.replace(/^[\s\r\n]+/, '').replace(/[\s\r\n]+$/, '');
-    },
-    convertTime: function(timestamp) {
-      var timeParts = timestamp.split(':');
-      var ms = (parseInt(timeParts[2], 10) * 10) + 
-           (parseInt(timeParts[1], 10) * 1000) + 
-           (parseInt(timeParts[0], 10) * 60000)
-      return ms;
-    },
-    renderCSS: function(dict) {
-      var css   = [],
-        value   = '',
-        paramlist;
-      for (var className in dict) {
-        paramlist = [];
-        for (param in dict[className]) {
-          value = dict[className][param];
-          paramlist.push(param + ': ' + value + ';');
-        }
-        css.push('.' + className + '{' + paramlist.join('') + '}');
-      }
-      return css.join('\n');
-    }
-  };
+  that.util = HisaishiUtil;
   
   /* Visual Feedback */
   

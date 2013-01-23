@@ -1,12 +1,31 @@
 var SoramimiLyricsContainer = function() {
   return {
-    numlines:       0,        // Number of active lines
+    numlines:       0,        // Number of active lines in the song
     lines:          {},       // Lines involved
     words:          {},       // Words
     timecode:       {},       // Timecode
     timecodeKeys:   [],       // Timecode keys
     groups:         {},       // Vocal groups
     hasGroups:      1         // Number of vocal groups
+  };
+};
+
+var SoramimiLineContainer = function(linenum, line) {
+  return {
+    id:      'lyricsline-' + linenum,
+    words:    [],
+    start:    null,
+    raw:      line,
+    'class':  ''
+  }
+};
+
+var SoramimiWordContainer = function(partnum, part, time) {
+  return {
+    id:       'lyricspart-' + partnum,
+    partnum:  partnum,
+    phrase:   part,
+    time:     time
   };
 };
 
@@ -50,48 +69,13 @@ var SoramimiLyrics = function(params) {
     // generate lyrics dump!
   };
   
+  that.cleanContainer = function() {
+    state.container = new SoramimiLyricsContainer();
+  };
+  
   /* Utilities */
   
-  internal.util = {
-    trim: function(txt) {
-      return txt.replace(/^[\s\r\n]+/, '').replace(/[\s\r\n]+$/, '');
-    },
-    
-    prePad: function(str, len, padVal) {
-      str = str + '';
-      if (str.length >= len) {
-        return str;
-      }
-      var arr = [];
-      for (var i = 0; i < str.length - len; i++) {
-        arr.push(padVal);
-      }
-      return arr.join('') + str;
-    },
-    
-    timestampToMS: function(timestamp) {
-      var timeParts = timestamp.split(':');
-      var ms = (parseInt(timeParts[2], 10) * 10) + 
-           (parseInt(timeParts[1], 10) * 1000) + 
-           (parseInt(timeParts[0], 10) * 60000)
-      return ms;
-    },
-    
-    msToTimestamp: function(ms) {
-      var base = ms / 10;
-      var baseSecs = Math.floor(base / 100);
-      
-      var centiSecs = base % 100;
-      var secs = baseSecs % 60;
-      var mins = Math.floor(baseSecs / 60);
-      
-      return [
-        mins, 
-        internal.util.prePad(secs, 2, '0'), 
-        internal.util.prePad(centiSecs, 2, '0')
-      ].join(':');
-    }
-  };
+  internal.util = HisaishiUtil;
   
   /* Parser */
   
@@ -149,13 +133,7 @@ var SoramimiLyrics = function(params) {
         continue;
       }
       
-      state.container.lines[linenum] = {
-        id:      'lyricsline-' + linenum,
-        words:    [],
-        start:    null,
-        raw:    line,
-        'class':  ''
-      };
+      state.container.lines[linenum] = new SoramimiLineContainer(linenum, line);
       
       fontre.lastIndex = 0;
       fontparts = fontre.exec(line);
@@ -164,9 +142,7 @@ var SoramimiLyrics = function(params) {
         
         state.container.lines[linenum]['class'] = group;
         if (!state.container.groups[group]) {
-          state.container.groups[group] = {
-            color: fontparts[1]
-          };
+          that.addGroup(fontparts[1]);
           state.container.hasGroups++;
         }
         
@@ -186,13 +162,7 @@ var SoramimiLyrics = function(params) {
         
         time = internal.util.timestampToMS(parts[1]);
         
-        state.container.words[partnum] = {
-          id:     'lyricspart-' + partnum,
-          partnum:   partnum,
-          phrase:   parts[2],
-          time:    time
-        };
-        
+        state.container.words[partnum] = new SoramimiWordContainer(partnum, parts[2], time);
         state.container.lines[linenum].words.push(partnum);
         
         if (!state.container.lines[linenum].start) {
@@ -220,9 +190,10 @@ var SoramimiLyrics = function(params) {
           endTime      = (typeof lastWord != "undefined") ? lastWord.time : 0;
         
         /* Add three queue points per line */
-        internal.PushPreroll(state.container.lines[index].id, startTime, pre.queue);
-        internal.PushPreroll(state.container.lines[index].id, startTime, linePrompt);
-        internal.PushPreroll(state.container.lines[index].id, endTime);
+        var currentId = state.container.lines[index].id;
+        internal.PushPreroll(currentId, startTime, pre.queue);
+        internal.PushPreroll(currentId, startTime, linePrompt);
+        internal.PushPreroll(currentId, endTime);
         
         /* Add two queue points per word */
         for (var j in words) {
@@ -246,6 +217,34 @@ var SoramimiLyrics = function(params) {
     
     // callback();
   };
+  
+  // Additive stuff
+  
+  that.addGroup = function(colour) {
+    var groupname = 'colourgroup-' + colour
+    state.container.groups[groupname] = {
+      color: '#' + colour
+    };
+  },
+  
+  that.removeGroup = function(colour) {
+    // clean lines or something?
+    
+    var groupname = 'colourgroup-' + colour
+    delete(state.container.groups[groupname]);
+  },
+  
+  that.translateUI = function(wrapper) {
+    that.cleanContainer();
+    $('.soramimi-line', wrapper).each(function(){
+      that.translateUILine(this);
+    });
+  };
+  
+  that.translateUILine = function(wrapper) {
+  };
+  
+  // Internal crap
   
   $.extend(true, that, {params: params});
   
